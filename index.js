@@ -1,3 +1,4 @@
+//New changes to reflect the v3.0^ syntax changes
 const express = require('express');
 const router = express.Router();
 const mongo = require('mongodb').MongoClient;
@@ -21,7 +22,8 @@ router.get('/get-data-from-collection', function(req, res, next){
     //Array to be populated with collection data
     let resultArr = []
     //connect to database
-    mongo.connect(url, function(err, db){
+    mongo.connect(url, function(err, client){
+        const db = client.db('test');
         //check for error
         assert.equal(null,err);
         
@@ -35,7 +37,7 @@ router.get('/get-data-from-collection', function(req, res, next){
             resultArr.push(doc);
         }, function() { // <---Callback, so it won't run immediately with our GET
             //close db connection
-            db.close();
+            client.close();
             res.render('index', {items: resultArr}); //items, would be connected to views to render docs from collection
         });
     })
@@ -51,7 +53,8 @@ router.post('/post-data-to-collection', function(req, res, next){
     }
 
     //connect to mongo and insert
-    mongo.connect(url, function(err,db){
+    mongo.connect(url, function(err, client){
+        const db = client.db('test');
         //check for errors
         assert.equal(null,err);
 
@@ -60,7 +63,7 @@ router.post('/post-data-to-collection', function(req, res, next){
             assert.equal(null, err);
             console.log('Item inserted');
             //close mongo connection
-            db.close();
+            client.close();
         })
     })
 });
@@ -78,7 +81,8 @@ router.put('/update-data-on-collection', function(req, res, next){
     const id = req.body.id; //in the update form you would have the 'id' name
     
     //connect to mongo and update
-    mongo.connect(url, function(err,db){
+    mongo.connect(url, function(err, client){
+        const db = client.db('test');
         //check for errors
         assert.equal(null,err);
 
@@ -88,7 +92,7 @@ router.put('/update-data-on-collection', function(req, res, next){
             assert.equal(null, err);
             console.log('Item update');
             //close mongo connection
-            db.close();
+            client.close();
         });
     });
 });
@@ -98,7 +102,8 @@ router.delete('/get-data-from-collection', function(req, res, next){
     const id = req.body.id; //select id to be deleted, you would fetch this from a form
     
     //connect to mongo and delete one
-    mongo.connect(url, function(err,db){
+    mongo.connect(url, function(err, client){
+        const db = client.db('test');
         //check for errors
         assert.equal(null,err);
 
@@ -107,7 +112,7 @@ router.delete('/get-data-from-collection', function(req, res, next){
             assert.equal(null, err);
             console.log('Item deleted');
             //close mongo connection
-            db.close();
+            client.close();
         });
     });
 });
